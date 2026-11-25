@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Feliz Cumpleaños • 26 de Noviembre</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Three.js para modelos 3D interactivos estilo clay/render suave -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Canvas Confetti para celebraciones -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            cream: '#FAF5F0',
+            beige: '#F5EBE0',
+            blush: '#FAD2E1',
+            fuchsiaLux: '#D81B60',
+            fuchsiaBright: '#E91E63',
+            purpleDeep: '#6A1B9A',
+            purpleVivid: '#8E24AA',
+          },
+          boxShadow: {
+            'glass': '0 18px 36px -14px rgba(106, 27, 154, 0.14), 0 4px 14px -2px rgba(216, 27, 96, 0.08)',
+            'glow': '0 10px 25px -5px rgba(216, 27, 96, 0.45)',
+            'phone': '0 30px 70px -15px rgba(45, 27, 46, 0.35), 0 0 0 10px #251726, 0 0 0 12px #FAD2E1',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #FAD2E1 0%, #F5EBE0 48%, #E1BEE7 100%);
+      min-height: 100dvh;
+      overflow: hidden;
+      color: #2D1B2E;
+    }
+
+    /* Contenedor estilo Teléfono Móvil */
+    .phone-shell {
+      background: linear-gradient(155deg, #FAF5F0 0%, #F5EBE0 50%, #FAD2E1 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Scrollbar limpio dentro del teléfono */
+    .phone-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .phone-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .phone-scroll::-webkit-scrollbar-thumb {
+      background: rgba(216, 27, 96, 0.25);
+      border-radius: 9999px;
+    }
+
+    /* Orbes ambientales dentro del teléfono */
+    .ambient-orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(55px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.65;
+      animation: floatOrb 11s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(16px, -20px) scale(1.07); }
+    }
+
+    /* Efecto Glassmorphism iOS */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      box-shadow: 0 16px 32px -12px rgba(106, 27, 154, 0.12), 0 4px 12px -2px rgba(216, 27, 96, 0.08);
+    }
+
+    /* Botón Principal Degradado */
+    .btn-primary {
+      background: linear-gradient(135deg, #D81B60 0%, #8E24AA 100%);
+      color: white;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 10px 22px -6px rgba(216, 27, 96, 0.45);
+    }
+    .btn-primary:active {
+      transform: scale(0.96);
+    }
+
+    /* Transiciones entre pantallas */
+    .screen-enter {
+      animation: fadeSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Moneda 3D mini animada en barra superior */
+    @keyframes coinSpin {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    .danycoin-badge-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 30%, #FFF3B0 0%, #F59E0B 55%, #B45309 100%);
+      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+      animation: coinSpin 4.5s linear infinite;
+    }
+
+    /* Pop de ganancia de +10 DanyCoins */
+    @keyframes coinToastPop {
+      0% { opacity: 0; transform: translateY(12px) scale(0.8); }
+      20% { opacity: 1; transform: translateY(0) scale(1.06); }
+      80% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-14px) scale(0.95); }
+    }
+    .coin-toast-anim {
+      animation: coinToastPop 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Estilo personalizado para Range Slider (Nivel 1) */
+    input[type=range].lux-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range].lux-slider:focus {
+      outline: none;
+    }
+    input[type=range].lux-slider::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 10px;
+      cursor: pointer;
+      background: linear-gradient(90deg, #FAD2E1 0%, #E91E63 50%, #6A1B9A 100%);
+      border-radius: 999px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    input[type=range].lux-slider::-webkit-slider-thumb {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 4px solid #D81B60;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -9px;
+      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.35);
+      transition: transform 0.15s ease;
+    }
+    input[type=range].lux-slider:active::-webkit-slider-thumb {
+      transform: scale(1.15);
+    }
+
+    /* Animación barras ecualizador */
+    @keyframes eqPulse {
+      0%, 100% { transform: scaleY(0.25); }
+      50% { transform: scaleY(1); }
+    }
+    .eq-bar {
+      transform-origin: bottom;
+      animation: eqPulse 0.8s ease-in-out infinite;
+    }
+
+    /* Animación de anclaje al encajar una pieza en el tablero */
+    @keyframes pieceAnchorPop {
+      0% { transform: scale(1.18); filter: brightness(1.15); }
+      65% { transform: scale(0.96); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+    .piece-anchored {
+      animation: pieceAnchorPop 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Efecto Shimmer metálico para el Ticket VIP */
+    .vip-ticket {
+      background: linear-gradient(135deg, #4A0E78 0%, #8E24AA 42%, #D81B60 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .vip-ticket::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 45%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 236, 210, 0.28) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(25deg);
+      animation: shimmerSweep 4s infinite ease-in-out;
+      pointer-events: none;
+    }
+    @keyframes shimmerSweep {
+      0% { left: -60%; }
+      55%, 100% { left: 140%; }
+    }
+
+    /* Animación de firma caligráfica en contrato */
+    .signature-stroke {
+      stroke-dasharray: 420;
+      stroke-dashoffset: 420;
+    }
+    .signature-animate {
+      animation: drawSignature 1.5s cubic-bezier(0.35, 0, 0.25, 1) forwards;
+    }
+    @keyframes drawSignature {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Sello de contrato aceptado */
+    @keyframes stampSlam {
+      0% { opacity: 0; transform: scale(2.2) rotate(-18deg); }
+      70% { opacity: 1; transform: scale(0.92) rotate(-8deg); }
+      100% { opacity: 1; transform: scale(1) rotate(-8deg); }
+    }
+    .stamp-animate {
+      animation: stampSlam 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Sacudida de Mystery Box al abrir */
+    @keyframes boxShake {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      20% { transform: rotate(-7deg) scale(1.05); }
+      40% { transform: rotate(7deg) scale(1.08); }
+      60% { transform: rotate(-5deg) scale(1.1); }
+      80% { transform: rotate(5deg) scale(1.06); }
+    }
+    .box-shaking {
+      animation: boxShake 0.75s ease-in-out;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center sm:p-4">
+
+  <!-- ======================================================================= -->
+  <!-- CARCASA DE TELÉFONO MÓVIL (Full-screen en móvil, marco iPhone en PC)   -->
+  <!-- ======================================================================= -->
+  <div class="phone-shell w-full h-[100dvh] sm:w-[395px] sm:h-[812px] sm:max-h-[94dvh] sm:rounded-[44px] sm:shadow-phone flex flex-col relative">
+
+    <!-- Orbes decorativos internos -->
+    <div class="ambient-orb w-64 h-64 bg-[#FAD2E1] -top-10 -left-10"></div>
+    <div class="ambient-orb w-72 h-72 bg-[#E1BEE7] bottom-0 -right-14" style="animation-delay: -4s;"></div>
+
+    <!-- Barra de Estado Estilo iOS / Dynamic Island (Solo visible en marco desktop) -->
+    <div class="hidden sm:flex items-center justify-between px-7 pt-3 pb-1 z-30 text-[11px] font-bold text-[#3B1847] shrink-0">
+      <span>9:41</span>
+      <div class="w-24 h-5 bg-[#1F1220] rounded-full flex items-center justify-end px-2">
+        <span class="w-2 h-2 rounded-full bg-[#D81B60]/80"></span>
+      </div>
+      <div class="flex items-center gap-1">
+        <span>5G</span>
+        <span class="w-4 h-2.5 border border-[#3B1847] rounded-[3px] p-[1px] inline-flex">
+          <span class="w-full h-full bg-[#3B1847] rounded-[1px]"></span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Toast Flotante al Ganar +10 DanyCoins -->
+    <div id="coin-toast" class="hidden absolute top-16 left-1/2 -translate-x-1/2 z-50 bg-[#2D1B2E] text-white px-4 py-2 rounded-full shadow-xl border border-[#F59E0B]/50 flex items-center gap-2 text-xs font-bold whitespace-nowrap pointer-events-none">
+      <span class="w-5 h-5 rounded-full danycoin-badge-icon text-[10px] text-[#451A03] font-extrabold">D</span>
+      <span>+10 DanyCoins ganadas</span>
+    </div>
+
+    <!-- Cabecera Persistente de Progreso + Saldo de DanyCoins -->
+    <header id="progress-header" class="hidden relative z-20 px-4 pt-3 sm:pt-2 pb-1 shrink-0">
+      <div class="glass-card px-4 py-2.5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="level-indicator" class="text-[11px] font-extrabold tracking-wider uppercase text-[#6A1B9A]">Misión 1 de 4</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAD2E1]/80 text-[#D81B60]">26 NOV</span>
+          </div>
+
+          <!-- Contador de DanyCoins -->
+          <div class="flex items-center gap-1.5 bg-gradient-to-r from-[#FFFBEB] to-[#FEF3C7] border border-[#F59E0B]/40 px-2.5 py-1 rounded-full shadow-xs">
+            <span class="w-4 h-4 rounded-full danycoin-badge-icon text-[9px] text-[#451A03] font-black">D</span>
+            <span id="danycoins-count" class="text-xs font-extrabold text-[#92400E]">0</span>
+            <span class="text-[10px] font-bold text-[#B45309]">DanyCoins</span>
+          </div>
+        </div>
+
+        <div class="w-full h-1.5 bg-[#F5EBE0] rounded-full overflow-hidden">
+          <div id="progress-bar-fill" class="h-full rounded-full bg-gradient-to-r from-[#D81B60] to-[#6A1B9A] transition-all duration-500 ease-out" style="width: 25%;"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Área Desplazable Principal de Pantallas -->
+    <main id="phone-viewport" class="phone-scroll flex-1 overflow-y-auto px-4 py-3 flex flex-col justify-center relative z-10">
+
+      <!-- =================================================================== -->
+      <!-- 0. PANTALLA DE BIENVENIDA                                           -->
+      <!-- =================================================================== -->
+      <section id="screen-welcome" class="glass-card p-6 flex flex-col items-center text-center gap-5 screen-enter my-auto">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FAD2E1]/80 border border-white text-[#6A1B9A] text-[11px] font-bold tracking-widest uppercase shadow-xs">
+          <span>✨</span>
+          <span>26 de Noviembre</span>
+          <span>✨</span>
+        </div>
+
+        <div class="w-20 h-20 rounded-[26px] bg-gradient-to-br from-[#FAD2E1] via-[#F5EBE0] to-[#E1BEE7] flex items-center justify-center text-4xl shadow-glass border-2 border-white">
+          🎂
+        </div>
+
+        <div class="space-y-2">
+          <h1 class="font-serif text-3xl font-bold text-[#3B1847] leading-tight">
+            Feliz Cumpleaños
+          </h1>
+          <p class="text-xs text-[#5C435D] leading-relaxed">
+            Hoy es tu día especial. Completa las <strong>4 misiones</strong> para descubrir tus regalos y acumular <strong>DanyCoins</strong> para la tienda VIP.
+          </p>
+        </div>
+
+        <!-- Resumen de las 4 misiones en el nuevo orden -->
+        <div class="w-full bg-white/65 rounded-2xl p-3 border border-white grid grid-cols-4 gap-1 text-[11px] font-semibold text-[#6A1B9A]">
+          <div class="flex flex-col items-center gap-1">
+            <span class="text-lg">📻</span>
+            <span>Misión 1</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <span class="text-lg">🧩</span>
+            <span>Misión 2</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <span class="text-lg">🌸</span>
+            <span>Misión 3</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <span class="text-lg">🎁</span>
+            <span>VIP</span>
+          </div>
+        </div>
+
+        <button onclick="startExperience()" class="btn-primary w-full py-3.5 rounded-2xl font-semibold text-sm tracking-wide cursor-pointer">
+          Comenzar mi sorpresa ✨
+        </button>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 1. NIVEL 1: SINTONIZA LA EMISORA 26.11 FM -> AUDÍFONOS CUBITT       -->
+      <!-- =================================================================== -->
+      <section id="screen-level-1" class="hidden glass-card p-5 flex flex-col gap-4 my-auto">
+        <!-- Vista del Juego -->
+        <div id="game-1-view" class="flex flex-col gap-4">
+          <div class="text-center space-y-1">
+            <span class="text-[11px] font-bold uppercase tracking-widest text-[#6A1B9A]">Misión 1 • Frecuencia Especial</span>
+            <h2 class="font-serif text-2xl font-bold text-[#3B1847]">Sintoniza la emisora</h2>
+            <p class="text-xs text-[#6B536C]">Mueve el dial hasta encontrar la frecuencia de tu cumpleaños: <strong>26.11 FM</strong>.</p>
+          </div>
+
+          <!-- Display estilo Radio / Ecualizador -->
+          <div class="bg-gradient-to-br from-[#3B1847] to-[#6A1B9A] rounded-2xl p-4 text-white shadow-lg border border-white/20 flex flex-col items-center gap-3">
+            <div class="w-full flex items-center justify-between text-[10px] uppercase tracking-widest text-[#FAD2E1]">
+              <span>STEREO • FM</span>
+              <span id="signal-badge" class="px-2.5 py-0.5 rounded-full bg-white/15 font-semibold">Buscando señal...</span>
+            </div>
+
+            <div class="font-mono text-4xl font-bold tracking-wider text-white flex items-baseline gap-1.5">
+              <span id="freq-display">22.40</span>
+              <span class="text-xs font-sans font-semibold text-[#FAD2E1]">FM</span>
+            </div>
+
+            <div id="eq-container" class="h-10 flex items-end justify-center gap-1.5 w-full px-4">
+              <span class="eq-bar w-2 h-7 bg-[#FAD2E1] rounded-full" style="animation-delay: 0.0s;"></span>
+              <span class="eq-bar w-2 h-10 bg-[#E91E63] rounded-full" style="animation-delay: 0.15s;"></span>
+              <span class="eq-bar w-2 h-5 bg-[#FAD2E1] rounded-full" style="animation-delay: 0.3s;"></span>
+              <span class="eq-bar w-2 h-10 bg-white rounded-full" style="animation-delay: 0.1s;"></span>
+              <span class="eq-bar w-2 h-8 bg-[#E91E63] rounded-full" style="animation-delay: 0.25s;"></span>
+              <span class="eq-bar w-2 h-10 bg-[#FAD2E1] rounded-full" style="animation-delay: 0.4s;"></span>
+              <span class="eq-bar w-2 h-6 bg-white rounded-full" style="animation-delay: 0.2s;"></span>
+              <span class="eq-bar w-2 h-9 bg-[#E91E63] rounded-full" style="animation-delay: 0.35s;"></span>
+              <span class="eq-bar w-2 h-5 bg-[#FAD2E1] rounded-full" style="animation-delay: 0.05s;"></span>
+            </div>
+          </div>
+
+          <!-- Control deslizante + botones de ajuste fino -->
+          <div class="bg-white/70 rounded-2xl p-3.5 border border-white flex flex-col gap-2.5">
+            <input id="tuner-slider" type="range" min="20.00" max="30.00" step="0.01" value="22.40" class="lux-slider" />
+            <div class="flex items-center justify-between text-[11px] text-[#6B536C] font-medium">
+              <span>20.00</span>
+              <div class="flex items-center gap-2">
+                <button onclick="adjustTuner(-0.01)" class="w-8 h-8 rounded-full bg-white border border-[#D81B60]/25 text-[#D81B60] font-bold shadow-xs active:scale-90 transition cursor-pointer">−</button>
+                <span class="text-[11px] text-[#6A1B9A] font-semibold">Ajuste fino</span>
+                <button onclick="adjustTuner(0.01)" class="w-8 h-8 rounded-full bg-white border border-[#D81B60]/25 text-[#D81B60] font-bold shadow-xs active:scale-90 transition cursor-pointer">+</button>
+              </div>
+              <span>30.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vista de Revelación 3D Regalo #1 (Audífonos Cubitt + Pista del carro) -->
+        <div id="reward-1-view" class="hidden flex-col items-center text-center gap-3.5 screen-enter">
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-0.5 rounded-full bg-[#6A1B9A]/10 text-[#6A1B9A] text-[11px] font-bold uppercase tracking-wider">Regalo #1 • +10 DanyCoins</span>
+          </div>
+
+          <!-- Visor 3D Interactivo (Se puede girar con el dedo) -->
+          <div class="relative w-full h-44 rounded-2xl bg-gradient-to-b from-[#E0F2FE] via-[#FAF5F0] to-[#FAD2E1]/60 border-2 border-white shadow-inner overflow-hidden">
+            <canvas id="canvas-3d-headphones" class="w-full h-full block touch-none cursor-grab active:cursor-grabbing"></canvas>
+            <span class="absolute bottom-2 right-2.5 text-[10px] font-semibold bg-white/80 text-[#6A1B9A] px-2 py-0.5 rounded-full pointer-events-none">
+              ↻ Desliza para girar 3D
+            </span>
+          </div>
+
+          <div class="space-y-1.5">
+            <h3 class="font-serif text-xl font-bold text-[#3B1847]">¡Ve a ver qué suena en la radio!</h3>
+            <p class="text-xs text-[#4A354B] leading-relaxed bg-[#FAF5F0]/90 p-3.5 rounded-2xl border border-white">
+              "Señal sintonizada en <strong>26.11 FM</strong>. Sal un momento y <strong>ve a ver qué está sonando en la radio del carro</strong> para encontrar tus <strong>Cubitt Power Headphones Lite</strong> 🚗🎧"
+            </p>
+          </div>
+
+          <button onclick="goToLevel(2)" class="btn-primary w-full py-3.5 rounded-2xl font-semibold text-sm tracking-wide cursor-pointer">
+            ¡Ya los tengo! Siguiente misión
+          </button>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 2. NIVEL 2: ROMPECABEZAS DE 20 PIEZAS (MICROONDAS DE LA COCINA)     -->
+      <!-- =================================================================== -->
+      <section id="screen-level-2" class="hidden glass-card p-4 flex flex-col gap-3 my-auto">
+        <!-- Vista del Juego -->
+        <div id="game-2-view" class="flex flex-col gap-3">
+          <div class="text-center space-y-0.5">
+            <span class="text-[11px] font-bold uppercase tracking-widest text-[#D81B60]">Misión 2 • Desafío de 20 Piezas</span>
+            <h2 class="font-serif text-xl font-bold text-[#3B1847]">Arma la pista secreta</h2>
+            <p class="text-[11px] text-[#6B536C]">Arrastra cada pieza al recuadro; al acertar quedará anclada.</p>
+          </div>
+
+          <!-- Tablero / Recuadro destino 4x5 (20 casillas) -->
+          <div class="relative w-full max-w-[196px] aspect-[4/5] mx-auto bg-[#F5EBE0] p-1.5 rounded-2xl border-2 border-white shadow-inner overflow-hidden">
+            <img id="puzzle-watermark-img" alt="" class="absolute inset-1.5 w-[calc(100%-12px)] h-[calc(100%-12px)] object-cover rounded-xl opacity-15 pointer-events-none" />
+
+            <div id="puzzle-preview-overlay" class="hidden absolute inset-1.5 z-30 rounded-xl overflow-hidden shadow-xl border border-white pointer-events-none">
+              <img id="puzzle-preview-img" alt="Vista previa" class="w-full h-full object-cover" />
+            </div>
+
+            <div id="puzzle-board" class="relative z-10 grid grid-cols-4 grid-rows-5 gap-[2px] w-full h-full"></div>
+          </div>
+
+          <!-- Bandeja externa con las 20 piezas para arrastrar -->
+          <div class="bg-white/65 rounded-2xl p-2 border border-white shadow-xs">
+            <div id="puzzle-tray" class="grid grid-cols-7 gap-1 justify-items-center"></div>
+          </div>
+
+          <!-- Controles inferiores -->
+          <div class="flex items-center justify-between gap-2 px-1">
+            <span id="puzzle-progress-text" class="text-[11px] font-bold text-[#6A1B9A]">Ancladas: 0 / 20</span>
+            <div class="flex items-center gap-1.5">
+              <button id="puzzle-peek-btn" class="text-[11px] font-semibold px-2.5 py-1 rounded-xl bg-[#FAD2E1]/80 text-[#D81B60] hover:bg-[#FAD2E1] transition cursor-pointer select-none">
+                👁️ Ver guía
+              </button>
+              <button onclick="autoSolvePuzzle()" class="text-[11px] font-semibold px-2.5 py-1 rounded-xl bg-white/90 text-[#8E24AA] border border-[#8E24AA]/20 hover:bg-white transition cursor-pointer">
+                ✨ Armar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vista de Revelación 3D Regalo #2 (Rompecabezas + Pista puerta arriba del microondas) -->
+        <div id="reward-2-view" class="hidden flex-col items-center text-center gap-3.5 screen-enter">
+          <span class="px-3 py-0.5 rounded-full bg-[#D81B60]/10 text-[#D81B60] text-[11px] font-bold uppercase tracking-wider">Regalo #2 • +10 DanyCoins</span>
+
+          <!-- Visor 3D Interactivo -->
+          <div class="relative w-full h-44 rounded-2xl bg-gradient-to-b from-[#E0F2FE] via-[#FAF5F0] to-[#E1BEE7]/60 border-2 border-white shadow-inner overflow-hidden">
+            <canvas id="canvas-3d-puzzle" class="w-full h-full block touch-none cursor-grab active:cursor-grabbing"></canvas>
+            <span class="absolute bottom-2 right-2.5 text-[10px] font-semibold bg-white/80 text-[#6A1B9A] px-2 py-0.5 rounded-full pointer-events-none">
+              ↻ Desliza para girar 3D
+            </span>
+          </div>
+
+          <div class="space-y-1.5">
+            <h3 class="font-serif text-xl font-bold text-[#3B1847]">¡Mira arriba del microondas!</h3>
+            <p class="text-xs text-[#4A354B] leading-relaxed bg-[#FAF5F0]/90 p-3.5 rounded-2xl border border-white">
+              "Reconociste la cocina. Ve y <strong>abre la puerta de madera que está justo arriba del microondas</strong> para buscar tu rompecabezas de verdad 🧩✨"
+            </p>
+          </div>
+
+          <button onclick="goToLevel(3)" class="btn-primary w-full py-3.5 rounded-2xl font-semibold text-sm tracking-wide cursor-pointer">
+            ¡Lo encontré! Siguiente misión
+          </button>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 3. NIVEL 3: UNIR FLORES DEL MISMO COLOR -> RAMO DE FLORES           -->
+      <!-- =================================================================== -->
+      <section id="screen-level-3" class="hidden glass-card p-5 flex flex-col gap-4 my-auto">
+        <!-- Vista del Juego -->
+        <div id="game-3-view" class="flex flex-col gap-3.5">
+          <div class="text-center space-y-1">
+            <span class="text-[11px] font-bold uppercase tracking-widest text-[#D81B60]">Misión 3 • Jardín Secreto</span>
+            <h2 class="font-serif text-2xl font-bold text-[#3B1847]">Une las flores</h2>
+            <p class="text-xs text-[#6B536C]">Desliza el dedo para conectar cada par de flores del mismo color sin cruzar los caminos.</p>
+          </div>
+
+          <div class="relative w-full max-w-[248px] aspect-square mx-auto bg-[#FAF5F0]/90 p-2 rounded-2xl border-2 border-white shadow-inner touch-none">
+            <svg id="flow-svg" viewBox="0 0 400 400" class="absolute inset-2 w-[calc(100%-16px)] h-[calc(100%-16px)] pointer-events-none z-10"></svg>
+            <div id="flow-board" class="relative z-20 grid grid-cols-4 grid-rows-4 gap-2 w-full h-full"></div>
+          </div>
+
+          <div class="flex items-center justify-between px-1">
+            <span id="flow-status-text" class="text-xs font-semibold text-[#6A1B9A]">Conectadas: 0 / 4</span>
+            <button onclick="initFlowGame()" class="text-xs font-semibold px-3 py-1 rounded-xl bg-white/85 text-[#D81B60] border border-[#D81B60]/20 hover:bg-white transition cursor-pointer">
+              ↻ Reiniciar
+            </button>
+          </div>
+        </div>
+
+        <!-- Vista de Revelación 3D Regalo #3 (Ramo de Flores antes del final) -->
+        <div id="reward-3-view" class="hidden flex-col items-center text-center gap-3.5 screen-enter">
+          <span class="px-3 py-0.5 rounded-full bg-[#D81B60]/10 text-[#D81B60] text-[11px] font-bold uppercase tracking-wider">Regalo #3 • +10 DanyCoins</span>
+
+          <!-- Visor 3D Interactivo -->
+          <div class="relative w-full h-44 rounded-2xl bg-gradient-to-b from-[#E0F2FE] via-[#FAF5F0] to-[#FAD2E1]/70 border-2 border-white shadow-inner overflow-hidden">
+            <canvas id="canvas-3d-flowers" class="w-full h-full block touch-none cursor-grab active:cursor-grabbing"></canvas>
+            <span class="absolute bottom-2 right-2.5 text-[10px] font-semibold bg-white/80 text-[#6A1B9A] px-2 py-0.5 rounded-full pointer-events-none">
+              ↻ Desliza para girar 3D
+            </span>
+          </div>
+
+          <div class="space-y-1.5">
+            <h3 class="font-serif text-xl font-bold text-[#3B1847]">¡Un detalle lleno de color!</h3>
+            <p class="text-xs text-[#4A354B] leading-relaxed bg-[#FAF5F0]/90 p-3.5 rounded-2xl border border-white">
+              "Antes de pasar a la tienda VIP, recibe tus flores para llenar este 26 de noviembre de alegría y aroma 🌸💐"
+            </p>
+          </div>
+
+          <button onclick="goToLevel(4)" class="btn-primary w-full py-3.5 rounded-2xl font-semibold text-sm tracking-wide cursor-pointer">
+            Ir a la Misión VIP (30 DanyCoins) ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- 4. NIVEL 4: TIENDA VIP DANYCOINS, CONTRATO FIRMADO Y MYSTERY BOX    -->
+      <!-- =================================================================== -->
+      <section id="screen-level-4" class="hidden glass-card p-4 flex flex-col gap-3.5 my-auto">
+
+        <!-- FASE A: TIENDA DE CANJE CON MONEDA 3D -->
+        <div id="vip-shop-view" class="flex flex-col gap-3">
+          <div class="flex items-center gap-3 bg-gradient-to-r from-[#3B1847] to-[#6A1B9A] rounded-2xl p-3 text-white shadow-md">
+            <div class="w-14 h-14 rounded-xl bg-white/10 border border-white/20 shrink-0 overflow-hidden">
+              <canvas id="canvas-3d-coin" class="w-full h-full block touch-none"></canvas>
+            </div>
+            <div class="text-left">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-[#FAD2E1]">Tienda Exclusiva VIP</span>
+              <h2 class="font-serif text-lg font-bold leading-tight">Canjea tus 30 DanyCoins</h2>
+              <p class="text-[11px] text-white/80 leading-snug">Elige <strong>1 solo premio</strong>. Una vez firmado el contrato, no habrá cambios.</p>
+            </div>
+          </div>
+
+          <!-- Cuadrícula de 4 Premios (30 DanyCoins c/u) -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- Opción 1: Mystery Box -->
+            <button onclick="openContractModal('mystery')" class="group bg-gradient-to-br from-[#FFFBEB] via-white to-[#FAD2E1]/60 hover:to-[#FAD2E1] border-2 border-[#F59E0B]/60 rounded-2xl p-3 flex flex-col items-center text-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer relative overflow-hidden">
+              <span class="absolute top-1.5 right-1.5 text-[9px] font-extrabold bg-[#D81B60] text-white px-1.5 py-0.5 rounded-full">VIP</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#D81B60] to-[#8E24AA] flex items-center justify-center text-2xl shadow-md text-white group-hover:scale-105 transition">
+                🎁
+              </div>
+              <h3 class="font-serif text-sm font-bold text-[#3B1847] leading-tight">Mystery Box</h3>
+              <p class="text-[10px] text-[#6B536C] leading-tight">Caja sorpresa edición cumpleaños</p>
+              <span class="mt-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FEF3C7] border border-[#F59E0B]/40 text-[10px] font-extrabold text-[#92400E]">
+                30 DanyCoins
+              </span>
+            </button>
+
+            <!-- Opción 2: Masaje de Pies -->
+            <button onclick="openContractModal('feet')" class="group bg-white/85 hover:bg-white border border-white rounded-2xl p-3 flex flex-col items-center text-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer">
+              <div class="w-12 h-12 rounded-2xl bg-[#FAD2E1]/80 flex items-center justify-center text-2xl group-hover:scale-105 transition">
+                🦶
+              </div>
+              <h3 class="font-serif text-sm font-bold text-[#3B1847] leading-tight">Masaje de Pies</h3>
+              <p class="text-[10px] text-[#6B536C] leading-tight">Sesión relajante consentida</p>
+              <span class="mt-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F5EBE0] text-[10px] font-extrabold text-[#6A1B9A]">
+                30 DanyCoins
+              </span>
+            </button>
+
+            <!-- Opción 3: Masaje de Manos -->
+            <button onclick="openContractModal('hands')" class="group bg-white/85 hover:bg-white border border-white rounded-2xl p-3 flex flex-col items-center text-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer">
+              <div class="w-12 h-12 rounded-2xl bg-[#E1BEE7]/70 flex items-center justify-center text-2xl group-hover:scale-105 transition">
+                ✋
+              </div>
+              <h3 class="font-serif text-sm font-bold text-[#3B1847] leading-tight">Masaje de Manos</h3>
+              <p class="text-[10px] text-[#6B536C] leading-tight">Spa hidratante y relajación</p>
+              <span class="mt-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F5EBE0] text-[10px] font-extrabold text-[#6A1B9A]">
+                30 DanyCoins
+              </span>
+            </button>
+
+            <!-- Opción 4: Día para jugar GTA IV -->
+            <button onclick="openContractModal('gta')" class="group bg-white/85 hover:bg-white border border-white rounded-2xl p-3 flex flex-col items-center text-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer">
+              <div class="w-12 h-12 rounded-2xl bg-[#DBEAFE] flex items-center justify-center text-2xl group-hover:scale-105 transition">
+                🎮
+              </div>
+              <h3 class="font-serif text-sm font-bold text-[#3B1847] leading-tight">Día de GTA IV</h3>
+              <p class="text-[10px] text-[#6B536C] leading-tight">Maratón gamer sin interrupciones</p>
+              <span class="mt-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F5EBE0] text-[10px] font-extrabold text-[#6A1B9A]">
+                30 DanyCoins
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- FASE B: CONTRATO DE TÉRMINOS Y CONDICIONES + ANIMACIÓN DE FIRMA -->
+        <div id="vip-contract-view" class="hidden flex-col gap-3.5 screen-enter">
+          <div class="bg-[#FFFDF9] rounded-2xl p-4 border-2 border-[#D81B60]/25 shadow-md flex flex-col gap-3 relative overflow-hidden">
+            <div class="flex items-center justify-between border-b border-[#F5EBE0] pb-2">
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#D81B60]">Contrato Oficial • Cláusula Única</span>
+              <span class="text-[10px] font-mono text-[#6B536C]">26-NOV-VIP</span>
+            </div>
+
+            <div class="space-y-2 text-left">
+              <h3 class="font-serif text-lg font-bold text-[#3B1847]">Acuerdo de Canje Irreversible</h3>
+              <p class="text-xs text-[#4A354B] leading-relaxed">
+                Por medio del presente documento, acepto canjear mis <strong>30 DanyCoins</strong> por el siguiente beneficio exclusivo:
+              </p>
+              <div id="contract-selected-box" class="bg-[#FAD2E1]/45 border border-[#D81B60]/25 rounded-xl px-3 py-2 text-center font-bold text-sm text-[#6A1B9A]">
+                🎁 Mystery Box VIP
+              </div>
+              <p class="text-[11px] text-[#6B536C] leading-relaxed">
+                <strong>Términos y Condiciones:</strong> Acepto que esta decisión es definitiva, vinculante e irreversible; una vez firmado este contrato no podré cambiar este premio por ningún otro artículo de la tienda.
+              </p>
+            </div>
+
+            <!-- Zona de Firma Animada -->
+            <div class="mt-1 pt-2 border-t border-dashed border-[#D81B60]/30 flex flex-col items-center relative">
+              <svg viewBox="0 0 260 65" class="w-56 h-14 overflow-visible">
+                <!-- Firma caligráfica elegante -->
+                <path id="signature-path" class="signature-stroke" fill="none" stroke="#D81B60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                  d="M 22 46 C 34 14, 52 12, 46 44 C 42 56, 62 34, 74 36 C 82 37, 76 48, 88 45 C 100 42, 114 22, 118 16 C 114 34, 110 52, 124 44 C 136 37, 144 46, 158 38 C 172 30, 188 42, 236 34" />
+              </svg>
+              <div class="w-48 border-b border-[#3B1847]/40 -mt-2"></div>
+              <span class="text-[10px] font-semibold text-[#6B536C] mt-1">Firma de la Cumpleañera</span>
+
+              <!-- Sello que aparece al terminar de firmar -->
+              <div id="contract-stamp" class="hidden absolute right-2 top-1 border-2 border-[#D81B60] text-[#D81B60] bg-white/90 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shadow-sm">
+                ACEPTADO ✓
+              </div>
+            </div>
+          </div>
+
+          <div id="contract-actions" class="flex flex-col gap-2">
+            <button id="sign-contract-btn" onclick="signAndConfirmContract()" class="btn-primary w-full py-3.5 rounded-2xl font-semibold text-sm tracking-wide cursor-pointer">
+              ✍️ Firmar y Aceptar Términos
+            </button>
+            <button id="back-to-shop-btn" onclick="cancelContract()" class="w-full py-2.5 rounded-xl bg-white/80 text-xs font-semibold text-[#6B536C] border border-white hover:bg-white transition cursor-pointer">
+              ← Volver a mirar opciones
+            </button>
+          </div>
+        </div>
+
+        <!-- FASE C1: SI ELIGIÓ LA MYSTERY BOX -> ABRE Y REVELA CUPÓN DE LIMPIEZA FACIAL -->
+        <div id="vip-mystery-win-view" class="hidden flex-col items-center gap-3.5 screen-enter">
+          <!-- Visor 3D de la Mystery Box -->
+          <div id="mystery-box-3d-wrapper" class="relative w-full h-36 rounded-2xl bg-gradient-to-b from-[#FFFBEB] via-[#FAF5F0] to-[#FAD2E1]/70 border-2 border-white shadow-inner overflow-hidden">
+            <canvas id="canvas-3d-mystery" class="w-full h-full block touch-none cursor-grab active:cursor-grabbing"></canvas>
+            <span class="absolute bottom-1.5 right-2 text-[10px] font-semibold bg-white/85 text-[#6A1B9A] px-2 py-0.5 rounded-full pointer-events-none">
+              ↻ Gira tu Mystery Box 3D
+            </span>
+          </div>
+
+          <!-- Boleto VIP Estilo Apple Wallet -->
+          <div class="vip-ticket w-full rounded-[24px] p-5 text-white shadow-xl border border-[#FAD2E1]/40">
+            <div class="flex items-center justify-between border-b border-white/20 pb-2.5">
+              <div class="flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-[#FAD2E1] text-[#6A1B9A] flex items-center justify-center text-[10px] font-bold">✦</span>
+                <span class="text-[10px] font-bold tracking-widest uppercase text-[#FAD2E1]">Apple Wallet • Cupón Desbloqueado</span>
+              </div>
+              <span class="text-[11px] font-mono font-semibold bg-white/15 px-2 py-0.5 rounded-full">26 NOV</span>
+            </div>
+
+            <div class="py-3.5 space-y-1 text-left">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-[#FAD2E1] font-semibold">Premio de la Mystery Box</p>
+              <h3 class="font-serif text-xl font-bold leading-tight text-white">
+                LIMPIEZA FACIAL &amp; SPA DAY
+              </h3>
+              <p class="text-[11px] text-white/90 pt-0.5">
+                📍 Válido en el lugar que tanto querías • ¡Te lo mereces!
+              </p>
+            </div>
+
+            <div class="relative flex items-center justify-between my-0.5">
+              <div class="w-4 h-4 rounded-full bg-[#F5EBE0] -ml-7"></div>
+              <div class="w-full border-t border-dashed border-white/35"></div>
+              <div class="w-4 h-4 rounded-full bg-[#F5EBE0] -mr-7"></div>
+            </div>
+
+            <div class="pt-2 flex items-center justify-between text-[10px] font-mono text-[#FAD2E1]">
+              <span>CONTRATO FIRMADO ✓</span>
+              <span>BDAY-2611-SPA</span>
+            </div>
+          </div>
+
+          <div class="w-full bg-white/85 rounded-2xl p-3 text-center border border-[#D81B60]/25">
+            <p class="font-serif text-lg font-bold text-[#D81B60]">¡Feliz Cumpleaños! Te amo ❤️</p>
+            <p class="text-[11px] text-[#5C435D]">Tu cupón está oficialmente activo y listo para usar.</p>
+          </div>
+        </div>
+
+        <!-- FASE C2: SI ELIGIÓ OTRO PREMIO -> VALE OFICIAL + ANIMACIÓN DE LO QUE HABÍA EN LA MYSTERY BOX -->
+        <div id="vip-other-chosen-view" class="hidden flex-col items-center gap-3.5 screen-enter">
+          <!-- Vale del premio que sí escogió -->
+          <div class="w-full bg-gradient-to-br from-[#3B1847] to-[#8E24AA] rounded-2xl p-4 text-white shadow-lg border border-white/25 text-left space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-[#FAD2E1]">Vale Oficial Canjeado</span>
+              <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold">CONTRATO SELLADO</span>
+            </div>
+            <h3 id="chosen-alt-title" class="font-serif text-xl font-bold">Masaje de Pies</h3>
+            <p id="chosen-alt-desc" class="text-xs text-white/85">Válido por una sesión completa consentida. ¡Disfrútalo!</p>
+          </div>
+
+          <!-- Botón para revelar con animación qué había dentro de la Mystery Box -->
+          <button id="peek-mystery-btn" onclick="revealUnclaimedMysteryBox()" class="w-full py-3 px-4 rounded-2xl bg-[#FFFBEB] border-2 border-[#F59E0B]/60 text-[#92400E] font-bold text-xs shadow-sm flex items-center justify-center gap-2 hover:bg-[#FEF3C7] transition cursor-pointer">
+            <span>🎁</span>
+            <span>Ver qué había dentro de la Mystery Box...</span>
+          </button>
+
+          <!-- Animación de revelación bloqueada (No canjeable por contrato) -->
+          <div id="unclaimed-mystery-reveal" class="hidden w-full flex-col gap-2.5 screen-enter">
+            <div id="unclaimed-box-stage" class="bg-white/90 rounded-2xl p-3.5 border-2 border-dashed border-[#D81B60]/40 text-center relative overflow-hidden">
+              <div id="unclaimed-box-emoji" class="text-4xl mb-1 inline-block box-shaking">🎁</div>
+              <p class="text-[10px] font-bold uppercase tracking-widest text-[#D81B60]">Contenido de la Mystery Box</p>
+              <h4 class="font-serif text-lg font-bold text-[#3B1847] mt-0.5">Cupón de Limpieza Facial</h4>
+              <p class="text-[11px] text-[#6B536C]">En el lugar que tanto querías ir...</p>
+
+              <!-- Sello de Bloqueado -->
+              <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 border border-red-300 text-red-700 text-[10px] font-extrabold uppercase tracking-wide">
+                <span>🔒</span>
+                <span>Bloqueado • Ya firmaste otro premio</span>
+              </div>
+            </div>
+
+            <div class="bg-white/80 rounded-xl p-2.5 text-center border border-white">
+              <p class="font-serif text-base font-bold text-[#D81B60]">¡Feliz Cumpleaños! Te amo ❤️</p>
+              <p class="text-[11px] text-[#5C435D]">Disfruta tu premio canjeado (aunque quizás hoy tengas suerte... 😉).</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Indicador Home Bar estilo iPhone (Solo visible en marco desktop) -->
+    <div class="hidden sm:flex justify-center pb-2 pt-1 shrink-0 z-20">
+      <div class="w-32 h-1 bg-[#3B1847]/30 rounded-full"></div>
+    </div>
+
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- LÓGICA INTERACTIVA, MODELOS 3D (THREE.JS) Y JUEGOS                      -->
+  <!-- ======================================================================= -->
+  <script>
+    // =========================================================================
+    // ESTADO GLOBAL & DANYCOINS
+    // =========================================================================
+    let danyCoins = 0;
+    const rewardClaimedFlags = { 1: false, 2: false, 3: false };
+    let selectedVipOption = null;
+    let contractSigned = false;
+
+    const CONFETTI_COLORS = ['#D81B60', '#E91E63', '#6A1B9A', '#8E24AA', '#FAD2E1', '#F59E0B'];
+
+    function fireElegantConfetti(isBig = false) {
+      if (typeof confetti !== 'function') return;
+      if (isBig) {
+        const end = Date.now() + 2400;
+        (function frame() {
+          confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0.1, y: 0.7 }, colors: CONFETTI_COLORS });
+          confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 0.9, y: 0.7 }, colors: CONFETTI_COLORS });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+      } else {
+        confetti({ particleCount: 50, spread: 65, origin: { y: 0.65 }, colors: CONFETTI_COLORS });
+      }
+    }
+
+    function addDanyCoins(amount, missionNumber) {
+      if (rewardClaimedFlags[missionNumber]) return;
+      rewardClaimedFlags[missionNumber] = true;
+      danyCoins += amount;
+      document.getElementById('danycoins-count').textContent = danyCoins;
+
+      // Mostrar toast animado
+      const toast = document.getElementById('coin-toast');
+      toast.classList.remove('hidden', 'coin-toast-anim');
+      void toast.offsetWidth; // reiniciar animación
+      toast.classList.add('coin-toast-anim');
+      setTimeout(() => toast.classList.add('hidden'), 2250);
+    }
+
+    function updateDanyCoinsDisplay(val) {
+      danyCoins = val;
+      document.getElementById('danycoins-count').textContent = danyCoins;
+    }
+
+    // =========================================================================
+    // NAVEGACIÓN ENTRE PANTALLAS
+    // =========================================================================
+    function startExperience() {
+      document.getElementById('screen-welcome').classList.add('hidden');
+      document.getElementById('progress-header').classList.remove('hidden');
+      goToLevel(1);
+    }
+
+    function goToLevel(level) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`screen-level-${i}`).classList.add('hidden');
+      }
+
+      document.getElementById('level-indicator').textContent = `Misión ${level} de 4`;
+      document.getElementById('progress-bar-fill').style.width = `${level * 25}%`;
+
+      const target = document.getElementById(`screen-level-${level}`);
+      target.classList.remove('hidden');
+      target.classList.add('screen-enter');
+      document.getElementById('phone-viewport').scrollTop = 0;
+
+      if (level === 1) initTunerGame();
+      if (level === 2) initPuzzleGame();
+      if (level === 3) initFlowGame();
+      if (level === 4) initVipShop();
+    }
+
+    // =========================================================================
+    // MOTOR 3D ESTILO CLAY / SOFT RENDER (THREE.JS) CON ROTACIÓN TÁCTIL
+    // =========================================================================
+    const active3DViewers = {};
+
+    function mount3DGiftViewer(canvasId, type) {
+      if (typeof THREE === 'undefined') return;
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+
+      // Detener instancia previa si existe
+      if (active3DViewers[canvasId]) {
+        cancelAnimationFrame(active3DViewers[canvasId].rafId);
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width || 300;
+      const height = rect.height || 176;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      camera.position.set(0, 0.35, 5.2);
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(width, height, false);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+      // Iluminación suave tipo estudio 3D (como la imagen de referencia)
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.78);
+      scene.add(ambientLight);
+
+      const keyLight = new THREE.DirectionalLight(0xfff5f8, 0.85);
+      keyLight.position.set(4, 6, 5);
+      scene.add(keyLight);
+
+      const fillLight = new THREE.DirectionalLight(0xe1bee7, 0.45);
+      fillLight.position.set(-4, -2, 4);
+      scene.add(fillLight);
+
+      const rootGroup = new THREE.Group();
+      scene.add(rootGroup);
+
+      // Helper para materiales clay suaves
+      const clayMat = (hex, rough = 0.38, metal = 0.08) =>
+        new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal });
+
+      if (type === 'headphones') {
+        // Audífonos Cubitt estilo 3D redondeado
+        const bandGeo = new THREE.TorusGeometry(1.12, 0.14, 24, 48, Math.PI);
+        const band = new THREE.Mesh(bandGeo, clayMat(0xf5ebe0, 0.35));
+        band.position.y = 0.1;
+        rootGroup.add(band);
+
+        // Almohadilla superior de la diadema
+        const padGeo = new THREE.TorusGeometry(1.12, 0.16, 20, 36, Math.PI * 0.45);
+        const topPad = new THREE.Mesh(padGeo, clayMat(0xd81b60, 0.45));
+        topPad.rotation.z = Math.PI * 0.275;
+        topPad.position.y = 0.12;
+        rootGroup.add(topPad);
+
+        // Copas izquierda y derecha + almohadillas
+        [-1.12, 1.12].forEach((xPos, idx) => {
+          const side = idx === 0 ? -1 : 1;
+          const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.5, 0.34, 32), clayMat(0x6a1b9a, 0.3, 0.15));
+          cup.rotation.z = Math.PI / 2;
+          cup.position.set(xPos + side * 0.06, -0.05, 0);
+          rootGroup.add(cup);
+
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.05, 16, 32), clayMat(0xf59e0b, 0.25, 0.5));
+          ring.rotation.y = Math.PI / 2;
+          ring.position.set(xPos + side * 0.23, -0.05, 0);
+          rootGroup.add(ring);
+
+          const cushion = new THREE.Mesh(new THREE.TorusGeometry(0.44, 0.15, 20, 32), clayMat(0xfad2e1, 0.55));
+          cushion.rotation.y = Math.PI / 2;
+          cushion.position.set(xPos - side * 0.12, -0.05, 0);
+          rootGroup.add(cushion);
+        });
+
+        rootGroup.rotation.set(0.18, -0.35, 0.08);
+      }
+
+      if (type === 'puzzle') {
+        // Rompecabezas 3D de 4 piezas encajadas con pomos redondeados
+        const pieceColors = [0xd81b60, 0x8e24aa, 0xf59e0b, 0xec407a];
+        const offsets = [
+          [-0.58, 0.58, 0.06],
+          [0.58, 0.58, -0.04],
+          [-0.58, -0.58, -0.04],
+          [0.58, -0.58, 0.08]
+        ];
+
+        offsets.forEach(([ox, oy, oz], idx) => {
+          const tileGroup = new THREE.Group();
+          const base = new THREE.Mesh(new THREE.BoxGeometry(1.04, 1.04, 0.28), clayMat(pieceColors[idx], 0.35));
+          tileGroup.add(base);
+
+          // Pomo conector 3D
+          const knob = new THREE.Mesh(new THREE.SphereGeometry(0.22, 24, 24), clayMat(pieceColors[idx], 0.35));
+          if (idx === 0) knob.position.set(0.55, 0, 0);
+          if (idx === 1) knob.position.set(0, -0.55, 0);
+          if (idx === 2) knob.position.set(0, 0.55, 0);
+          if (idx === 3) knob.position.set(-0.55, 0, 0);
+          tileGroup.add(knob);
+
+          tileGroup.position.set(ox, oy, oz);
+          rootGroup.add(tileGroup);
+        });
+
+        rootGroup.rotation.set(0.25, -0.4, 0.1);
+      }
+
+      if (type === 'flowers') {
+        // Ramo de flores estilo 3D clay (cono crema + flores rosadas, fucsia y moradas)
+        const wrap = new THREE.Mesh(new THREE.ConeGeometry(0.95, 1.85, 32, 1, true), clayMat(0xf5ebe0, 0.55));
+        wrap.rotation.x = Math.PI;
+        wrap.position.y = -0.48;
+        wrap.material.side = THREE.DoubleSide;
+        rootGroup.add(wrap);
+
+        // Listón fucsia alrededor del ramo
+        const ribbon = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.08, 16, 32), clayMat(0xd81b60, 0.4));
+        ribbon.rotation.x = Math.PI / 2;
+        ribbon.position.y = -0.45;
+        rootGroup.add(ribbon);
+
+        // Flores redondeadas arriba
+        const flowerSpecs = [
+          { x: 0, y: 0.68, z: 0.1, color: 0xd81b60, scale: 1.08 },
+          { x: -0.52, y: 0.48, z: 0.28, color: 0x8e24aa, scale: 0.95 },
+          { x: 0.52, y: 0.5, z: 0.25, color: 0xfad2e1, scale: 0.96 },
+          { x: -0.28, y: 0.55, z: -0.35, color: 0xec407a, scale: 0.92 },
+          { x: 0.32, y: 0.52, z: -0.32, color: 0xab47bc, scale: 0.9 }
+        ];
+
+        flowerSpecs.forEach(f => {
+          const fGroup = new THREE.Group();
+          const center = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), clayMat(0xfbbf24, 0.35));
+          fGroup.add(center);
+
+          for (let p = 0; p < 6; p++) {
+            const angle = (p / 6) * Math.PI * 2;
+            const petal = new THREE.Mesh(new THREE.SphereGeometry(0.19, 18, 18), clayMat(f.color, 0.42));
+            petal.position.set(Math.cos(angle) * 0.23, Math.sin(angle) * 0.23, 0);
+            fGroup.add(petal);
+          }
+
+          fGroup.position.set(f.x, f.y, f.z);
+          fGroup.scale.setScalar(f.scale);
+          fGroup.lookAt(f.x * 1.6, f.y + 1.4, f.z * 1.6);
+          rootGroup.add(fGroup);
+        });
+
+        rootGroup.rotation.set(0.22, 0.2, 0);
+      }
+
+      if (type === 'coin') {
+        // Moneda 3D DanyCoin dorada brillante
+        camera.position.set(0, 0, 4.1);
+        const coinBody = new THREE.Mesh(
+          new THREE.CylinderGeometry(1.15, 1.15, 0.24, 40),
+          clayMat(0xf59e0b, 0.22, 0.65)
+        );
+        coinBody.rotation.x = Math.PI / 2;
+        rootGroup.add(coinBody);
+
+        const rim = new THREE.Mesh(
+          new THREE.TorusGeometry(1.06, 0.08, 16, 40),
+          clayMat(0xfde68a, 0.2, 0.7)
+        );
+        rootGroup.add(rim);
+
+        // Estrella / emblema central en ambos lados
+        [-0.13, 0.13].forEach(zSide => {
+          const gem = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.45, 0),
+            clayMat(0xd81b60, 0.25, 0.3)
+          );
+          gem.scale.set(1, 1, 0.35);
+          gem.position.z = zSide;
+          rootGroup.add(gem);
+        });
+      }
+
+      if (type === 'mystery') {
+        // Caja Misteriosa 3D con lazo dorado
+        const box = new THREE.Mesh(new THREE.BoxGeometry(1.45, 1.25, 1.45), clayMat(0x8e24aa, 0.35));
+        box.position.y = -0.15;
+        rootGroup.add(box);
+
+        const lid = new THREE.Mesh(new THREE.BoxGeometry(1.58, 0.32, 1.58), clayMat(0xd81b60, 0.35));
+        lid.position.y = 0.58;
+        rootGroup.add(lid);
+
+        // Cintas doradas
+        const ribbon1 = new THREE.Mesh(new THREE.BoxGeometry(1.62, 1.56, 0.26), clayMat(0xfbbf24, 0.28, 0.4));
+        ribbon1.position.y = -0.02;
+        rootGroup.add(ribbon1);
+
+        const ribbon2 = new THREE.Mesh(new THREE.BoxGeometry(0.26, 1.56, 1.62), clayMat(0xfbbf24, 0.28, 0.4));
+        ribbon2.position.y = -0.02;
+        rootGroup.add(ribbon2);
+
+        // Moño superior
+        [-0.28, 0.28].forEach((bx, idx) => {
+          const bow = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.08, 16, 24), clayMat(0xfbbf24, 0.28, 0.4));
+          bow.position.set(bx, 0.88, 0);
+          bow.rotation.y = idx === 0 ? 0.3 : -0.3;
+          rootGroup.add(bow);
+        });
+
+        rootGroup.rotation.set(0.25, 0.5, 0);
+      }
+
+      // Interacción táctil y con ratón para girar el objeto 3D
+      let isDragging = false;
+      let prevX = 0;
+      let prevY = 0;
+
+      canvas.onpointerdown = (e) => {
+        isDragging = true;
+        prevX = e.clientX;
+        prevY = e.clientY;
+        canvas.setPointerCapture(e.pointerId);
+      };
+
+      canvas.onpointermove = (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - prevX;
+        const dy = e.clientY - prevY;
+        prevX = e.clientX;
+        prevY = e.clientY;
+        rootGroup.rotation.y += dx * 0.014;
+        rootGroup.rotation.x = Math.max(-0.8, Math.min(0.8, rootGroup.rotation.x + dy * 0.012));
+      };
+
+      canvas.onpointerup = (e) => {
+        isDragging = false;
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      };
+
+      const state = { rafId: null };
+      active3DViewers[canvasId] = state;
+
+      function animate() {
+        state.rafId = requestAnimationFrame(animate);
+        if (!isDragging) {
+          rootGroup.rotation.y += type === 'coin' ? 0.025 : 0.01;
+        }
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    // =========================================================================
+    // NIVEL 1: SINTONIZA LA EMISORA 26.11 FM -> AUDÍFONOS CUBITT (CARRO)
+    // =========================================================================
+    const TARGET_FREQ = 26.11;
+    let tunerSolved = false;
+
+    function initTunerGame() {
+      tunerSolved = false;
+      const slider = document.getElementById('tuner-slider');
+      slider.disabled = false;
+      slider.value = '22.40';
+      updateTunerUI(22.40);
+
+      slider.oninput = (e) => {
+        if (tunerSolved) return;
+        updateTunerUI(parseFloat(e.target.value));
+      };
+    }
+
+    function adjustTuner(delta) {
+      if (tunerSolved) return;
+      const slider = document.getElementById('tuner-slider');
+      const nextVal = Math.min(30, Math.max(20, +(parseFloat(slider.value) + delta).toFixed(2)));
+      slider.value = nextVal.toFixed(2);
+      updateTunerUI(nextVal);
+    }
+
+    function updateTunerUI(freq) {
+      const display = document.getElementById('freq-display');
+      const badge = document.getElementById('signal-badge');
+      const bars = document.querySelectorAll('#eq-container .eq-bar');
+
+      display.textContent = freq.toFixed(2);
+
+      const diff = Math.abs(freq - TARGET_FREQ);
+      const proximity = Math.max(0, 1 - diff / 4);
+
+      bars.forEach((bar) => {
+        const speed = (1.1 - proximity * 0.65).toFixed(2);
+        bar.style.animationDuration = `${speed}s`;
+        bar.style.opacity = (0.35 + proximity * 0.65).toFixed(2);
+      });
+
+      if (diff < 0.005) {
+        tunerSolved = true;
+        document.getElementById('tuner-slider').disabled = true;
+        display.textContent = '26.11';
+        badge.textContent = '✨ ¡Señal Perfecta!';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-[#D81B60] text-white font-bold';
+        if (navigator.vibrate) navigator.vibrate([40, 30, 60]);
+        fireElegantConfetti(false);
+        addDanyCoins(10, 1);
+
+        setTimeout(() => {
+          document.getElementById('game-1-view').classList.add('hidden');
+          const reward = document.getElementById('reward-1-view');
+          reward.classList.remove('hidden');
+          reward.classList.add('flex');
+          mount3DGiftViewer('canvas-3d-headphones', 'headphones');
+        }, 750);
+      } else if (diff <= 0.35) {
+        badge.textContent = '🔥 ¡Muy cerca!';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-[#E91E63]/80 text-white font-semibold';
+      } else if (diff <= 1.2) {
+        badge.textContent = '📡 Acercándose...';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-white/25 text-[#FAD2E1] font-semibold';
+      } else {
+        badge.textContent = 'Buscando señal...';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-white/15 text-[#FAD2E1] font-semibold';
+      }
+    }
+
+    // =========================================================================
+    // NIVEL 2: ROMPECABEZAS 20 PIEZAS (MICROONDAS Y PUERTA SUPERIOR DE COCINA)
+    // =========================================================================
+    const PUZZLE_COLS = 4;
+    const PUZZLE_ROWS = 5;
+    const PUZZLE_TOTAL = PUZZLE_COLS * PUZZLE_ROWS;
+
+    let trayOrder = [];
+    let anchoredPieces = new Set();
+    let puzzleSolved = false;
+    let puzzleImageDataUrl = '';
+    let activeDragState = null;
+
+    // Genera una ilustración fiel de la cocina (pared de granito gris, gabinetes de madera,
+    // microondas Panasonic plateado/negro, cafetera Bremen, olla RAF y pista en la puerta superior)
+    function generateKitchenMicrowaveArtwork() {
+      const canvas = document.createElement('canvas');
+      const w = 480;
+      const h = 600;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Pared de granito gris texturizada
+      ctx.fillStyle = '#9C9A97';
+      ctx.fillRect(0, 0, w, h);
+      for (let i = 0; i < 3200; i++) {
+        const gx = Math.random() * w;
+        const gy = Math.random() * h;
+        const gs = 1.5 + Math.random() * 2.5;
+        ctx.fillStyle = i % 3 === 0 ? 'rgba(55,53,50,0.28)' : (i % 3 === 1 ? 'rgba(235,233,230,0.25)' : 'rgba(110,108,104,0.25)');
+        ctx.fillRect(gx, gy, gs, gs);
+      }
+
+      // Techo superior madera oscura
+      ctx.fillStyle = '#5D4037';
+      ctx.fillRect(0, 0, w, 46);
+
+      // Helper textura madera cálida
+      const drawWoodCabinet = (x, y, cw, ch) => {
+        const woodGrad = ctx.createLinearGradient(x, y, x + cw, y);
+        woodGrad.addColorStop(0, '#B87A3D');
+        woodGrad.addColorStop(0.5, '#C98A4B');
+        woodGrad.addColorStop(1, '#A96B30');
+        ctx.fillStyle = woodGrad;
+        ctx.fillRect(x, y, cw, ch);
+
+        // Vetas verticales sutiles
+        ctx.strokeStyle = 'rgba(92, 52, 18, 0.16)';
+        ctx.lineWidth = 1.5;
+        for (let vx = x + 8; vx < x + cw; vx += 11) {
+          ctx.beginPath();
+          ctx.moveTo(vx, y);
+          ctx.lineTo(vx, y + ch);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = '#6D431D';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, cw, ch);
+      };
+
+      // 2. Gabinetes superiores de madera (Izquierda sobre microondas + Derecha alto)
+      drawWoodCabinet(42, 46, 250, 142);
+      // Línea central de doble puerta
+      ctx.strokeStyle = '#6D431D';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(167, 46);
+      ctx.lineTo(167, 188);
+      ctx.stroke();
+
+      // Borde blanco inferior del gabinete izquierdo
+      ctx.fillStyle = '#F8FAFC';
+      ctx.fillRect(42, 188, 250, 9);
+
+      // Gabinete derecho alto
+      drawWoodCabinet(298, 46, 134, 275);
+      ctx.fillStyle = '#F8FAFC';
+      ctx.fillRect(298, 321, 134, 9);
+
+      // 3. Repisa de madera y Microondas Panasonic (Plateado y negro)
+      ctx.fillStyle = '#D99B52';
+      ctx.fillRect(28, 322, 274, 14);
+      ctx.fillRect(28, 286, 10, 50);
+      ctx.fillRect(292, 286, 10, 50);
+
+      // Cuerpo del microondas
+      ctx.fillStyle = '#E2E8F0';
+      ctx.fillRect(40, 200, 250, 122);
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(40, 200, 250, 122);
+
+      // Puerta de vidrio negro izquierda
+      ctx.fillStyle = '#1E293B';
+      ctx.fillRect(46, 206, 192, 92);
+      // Reflejo en el vidrio
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.fillRect(58, 214, 52, 76);
+
+      // Panel digital derecho negro
+      ctx.fillStyle = '#0F172A';
+      ctx.fillRect(241, 206, 44, 92);
+      ctx.fillStyle = '#38BDF8';
+      ctx.fillRect(248, 213, 30, 12);
+      // Botonera
+      ctx.fillStyle = '#94A3B8';
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 3; c++) {
+          ctx.fillRect(248 + c * 11, 234 + r * 13, 7, 8);
+        }
+      }
+
+      // Franja plateada inferior del microondas con texto Panasonic
+      ctx.fillStyle = '#CBD5E1';
+      ctx.fillRect(42, 298, 246, 22);
+      ctx.fillStyle = '#0F172A';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Panasonic', 142, 313);
+
+      // 4. Mesón de granito inferior + Cafetera Bremen negra y Olla RAF
+      ctx.fillStyle = '#B8B2A6';
+      ctx.fillRect(0, 525, w, 75);
+      ctx.fillStyle = '#8C867A';
+      ctx.fillRect(0, 522, w, 6);
+
+      // Cafetera negra Bremen (izquierda)
+      ctx.fillStyle = '#18181B';
+      ctx.beginPath();
+      ctx.roundRect(58, 418, 102, 128, 16);
+      ctx.fill();
+      ctx.fillStyle = '#A1A1AA';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('Bremen', 109, 482);
+
+      // Olla arrocera plateada/negra RAF (al lado)
+      ctx.fillStyle = '#CBD5E1';
+      ctx.beginPath();
+      ctx.roundRect(172, 434, 96, 104, 14);
+      ctx.fill();
+      ctx.fillStyle = '#1E293B';
+      ctx.fillRect(172, 426, 96, 16);
+      ctx.fillRect(198, 466, 44, 42);
+      ctx.fillStyle = '#F97316';
+      ctx.beginPath();
+      ctx.arc(220, 495, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 5. Indicador visual llamativo apuntando a la puerta de arriba del microondas
+      ctx.fillStyle = 'rgba(216, 27, 96, 0.92)';
+      ctx.beginPath();
+      ctx.roundRect(74, 86, 186, 56, 16);
+      ctx.fill();
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('¡BUSCA AQUÍ ARRIBA!', 167, 111);
+      ctx.font = '600 12px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#FAD2E1';
+      ctx.fillText('Puerta sobre el microondas', 167, 130);
+
+      return canvas.toDataURL('image/png');
+    }
+
+    function applyPieceBackground(el, pieceId) {
+      const origRow = Math.floor(pieceId / PUZZLE_COLS);
+      const origCol = pieceId % PUZZLE_COLS;
+      const posX = (origCol / (PUZZLE_COLS - 1)) * 100;
+      const posY = (origRow / (PUZZLE_ROWS - 1)) * 100;
+      el.style.backgroundImage = `url(${puzzleImageDataUrl})`;
+      el.style.backgroundSize = `${PUZZLE_COLS * 100}% ${PUZZLE_ROWS * 100}%`;
+      el.style.backgroundPosition = `${posX}% ${posY}%`;
+    }
+
+    function initPuzzleGame() {
+      anchoredPieces = new Set();
+      puzzleSolved = false;
+      activeDragState = null;
+
+      if (!puzzleImageDataUrl) {
+        puzzleImageDataUrl = generateKitchenMicrowaveArtwork();
+        document.getElementById('puzzle-preview-img').src = puzzleImageDataUrl;
+        document.getElementById('puzzle-watermark-img').src = puzzleImageDataUrl;
+      }
+
+      const peekBtn = document.getElementById('puzzle-peek-btn');
+      const overlay = document.getElementById('puzzle-preview-overlay');
+      const showPeek = (e) => { e.preventDefault(); overlay.classList.remove('hidden'); };
+      const hidePeek = () => overlay.classList.add('hidden');
+      peekBtn.onpointerdown = showPeek;
+      peekBtn.onpointerup = hidePeek;
+      peekBtn.onpointerleave = hidePeek;
+      peekBtn.onpointercancel = hidePeek;
+
+      trayOrder = Array.from({ length: PUZZLE_TOTAL }, (_, i) => i);
+      for (let i = PUZZLE_TOTAL - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [trayOrder[i], trayOrder[j]] = [trayOrder[j], trayOrder[i]];
+      }
+
+      renderPuzzleBoardAndTray();
+    }
+
+    function renderPuzzleBoardAndTray(justAnchoredId = null) {
+      const board = document.getElementById('puzzle-board');
+      const tray = document.getElementById('puzzle-tray');
+      board.innerHTML = '';
+      tray.innerHTML = '';
+
+      document.getElementById('puzzle-progress-text').textContent = `Ancladas: ${anchoredPieces.size} / ${PUZZLE_TOTAL}`;
+
+      for (let slotIdx = 0; slotIdx < PUZZLE_TOTAL; slotIdx++) {
+        const slot = document.createElement('div');
+        slot.dataset.slot = slotIdx;
+
+        if (anchoredPieces.has(slotIdx)) {
+          slot.className = 'rounded-[5px] border border-white/90 shadow-xs';
+          if (justAnchoredId === slotIdx) slot.classList.add('piece-anchored');
+          applyPieceBackground(slot, slotIdx);
+        } else {
+          slot.className = 'rounded-[5px] border border-dashed border-[#D81B60]/25 bg-white/35 transition-colors duration-150';
+        }
+        board.appendChild(slot);
+      }
+
+      trayOrder.forEach((pieceId) => {
+        const holder = document.createElement('div');
+        holder.className = 'w-9 h-9 rounded-lg flex items-center justify-center';
+
+        if (anchoredPieces.has(pieceId)) {
+          holder.classList.add('bg-[#F5EBE0]/50', 'border', 'border-dashed', 'border-[#8E24AA]/15');
+        } else {
+          const pieceEl = document.createElement('div');
+          pieceEl.dataset.pieceId = pieceId;
+          pieceEl.className = 'w-full h-full rounded-lg border border-white shadow-xs cursor-grab active:cursor-grabbing touch-none transition-transform duration-150 hover:scale-105';
+          applyPieceBackground(pieceEl, pieceId);
+          pieceEl.onpointerdown = (e) => startDraggingPuzzlePiece(e, pieceId, pieceEl);
+          holder.appendChild(pieceEl);
+        }
+        tray.appendChild(holder);
+      });
+    }
+
+    function startDraggingPuzzlePiece(e, pieceId, sourceEl) {
+      if (puzzleSolved || anchoredPieces.has(pieceId) || activeDragState) return;
+      e.preventDefault();
+
+      const targetSlot = document.querySelector(`#puzzle-board [data-slot="${pieceId}"]`);
+      const slotRect = targetSlot ? targetSlot.getBoundingClientRect() : { width: 44, height: 44 };
+
+      const ghost = document.createElement('div');
+      ghost.className = 'fixed z-50 rounded-lg border-2 border-[#D81B60] shadow-2xl pointer-events-none';
+      ghost.style.width = `${slotRect.width}px`;
+      ghost.style.height = `${slotRect.height}px`;
+      applyPieceBackground(ghost, pieceId);
+      document.body.appendChild(ghost);
+
+      sourceEl.style.opacity = '0.25';
+      const touchOffsetY = e.pointerType === 'touch' ? 24 : 0;
+
+      activeDragState = {
+        pieceId,
+        sourceEl,
+        ghost,
+        targetSlot,
+        width: slotRect.width,
+        height: slotRect.height,
+        touchOffsetY
+      };
+
+      updateGhostPosition(e.clientX, e.clientY);
+
+      window.addEventListener('pointermove', onPuzzlePointerMove);
+      window.addEventListener('pointerup', onPuzzlePointerUp);
+      window.addEventListener('pointercancel', onPuzzlePointerUp);
+    }
+
+    function updateGhostPosition(clientX, clientY) {
+      if (!activeDragState) return;
+      const { ghost, targetSlot, width, height, touchOffsetY } = activeDragState;
+      const centerX = clientX;
+      const centerY = clientY - touchOffsetY;
+
+      ghost.style.left = `${centerX - width / 2}px`;
+      ghost.style.top = `${centerY - height / 2}px`;
+
+      if (targetSlot) {
+        const rect = targetSlot.getBoundingClientRect();
+        const dist = Math.hypot(centerX - (rect.left + rect.width / 2), centerY - (rect.top + rect.height / 2));
+        const snapRadius = Math.max(rect.width * 0.72, 30);
+        if (dist <= snapRadius) {
+          targetSlot.classList.add('bg-[#FAD2E1]/80', 'border-[#D81B60]');
+        } else {
+          targetSlot.classList.remove('bg-[#FAD2E1]/80', 'border-[#D81B60]');
+        }
+      }
+    }
+
+    function onPuzzlePointerMove(e) {
+      if (activeDragState) updateGhostPosition(e.clientX, e.clientY);
+    }
+
+    function onPuzzlePointerUp(e) {
+      if (!activeDragState) return;
+      const { pieceId, sourceEl, ghost, targetSlot, touchOffsetY } = activeDragState;
+
+      window.removeEventListener('pointermove', onPuzzlePointerMove);
+      window.removeEventListener('pointerup', onPuzzlePointerUp);
+      window.removeEventListener('pointercancel', onPuzzlePointerUp);
+
+      const centerX = e.clientX;
+      const centerY = e.clientY - touchOffsetY;
+      let snapped = false;
+
+      if (targetSlot) {
+        targetSlot.classList.remove('bg-[#FAD2E1]/80', 'border-[#D81B60]');
+        const rect = targetSlot.getBoundingClientRect();
+        const dist = Math.hypot(centerX - (rect.left + rect.width / 2), centerY - (rect.top + rect.height / 2));
+        if (dist <= Math.max(rect.width * 0.75, 32)) snapped = true;
+      }
+
+      ghost.remove();
+      activeDragState = null;
+
+      if (snapped) {
+        anchoredPieces.add(pieceId);
+        if (navigator.vibrate) navigator.vibrate(25);
+        renderPuzzleBoardAndTray(pieceId);
+        checkPuzzleWin();
+      } else {
+        sourceEl.style.opacity = '1';
+      }
+    }
+
+    function autoSolvePuzzle() {
+      if (puzzleSolved) return;
+      for (let i = 0; i < PUZZLE_TOTAL; i++) anchoredPieces.add(i);
+      renderPuzzleBoardAndTray();
+      checkPuzzleWin();
+    }
+
+    function checkPuzzleWin() {
+      if (anchoredPieces.size === PUZZLE_TOTAL && !puzzleSolved) {
+        puzzleSolved = true;
+        const board = document.getElementById('puzzle-board');
+        board.innerHTML = `<img src="${puzzleImageDataUrl}" alt="Pista cocina completada" class="col-span-4 row-span-5 w-full h-full object-cover rounded-xl shadow-lg screen-enter" />`;
+        fireElegantConfetti(false);
+        addDanyCoins(10, 2);
+
+        setTimeout(() => {
+          document.getElementById('game-2-view').classList.add('hidden');
+          const reward = document.getElementById('reward-2-view');
+          reward.classList.remove('hidden');
+          reward.classList.add('flex');
+          mount3DGiftViewer('canvas-3d-puzzle', 'puzzle');
+        }, 1250);
+      }
+    }
+
+    // =========================================================================
+    // NIVEL 3: UNIR FLORES DEL MISMO COLOR -> RAMO DE FLORES
+    // =========================================================================
+    const FLOW_SIZE = 4;
+    const FLOW_PAIRS = [
+      { id: 0, color: '#D81B60', bg: '#FCE4EC', emoji: '🌸', start: [0, 0], end: [2, 1] },
+      { id: 1, color: '#7B1FA2', bg: '#F3E5F5', emoji: '🪻', start: [3, 0], end: [3, 3] },
+      { id: 2, color: '#EC407A', bg: '#FAD2E1', emoji: '🌷', start: [0, 1], end: [2, 2] },
+      { id: 3, color: '#D97706', bg: '#FEF3C7', emoji: '🌻', start: [0, 2], end: [2, 3] }
+    ];
+
+    let flowPaths = { 0: [], 1: [], 2: [], 3: [] };
+    let activeFlowPair = null;
+    let flowWon = false;
+
+    function getFlowEndpoint(r, c) {
+      return FLOW_PAIRS.find(
+        p => (p.start[0] === r && p.start[1] === c) || (p.end[0] === r && p.end[1] === c)
+      ) || null;
+    }
+
+    function getFlowCellOwner(r, c) {
+      for (const pair of FLOW_PAIRS) {
+        if (flowPaths[pair.id].some(([pr, pc]) => pr === r && pc === c)) return pair.id;
+      }
+      return null;
+    }
+
+    function isFlowPairConnected(pair) {
+      const path = flowPaths[pair.id];
+      if (!path || path.length < 2) return false;
+      const first = path[0];
+      const last = path[path.length - 1];
+      return (
+        (first[0] === pair.start[0] && first[1] === pair.start[1] && last[0] === pair.end[0] && last[1] === pair.end[1]) ||
+        (first[0] === pair.end[0] && first[1] === pair.end[1] && last[0] === pair.start[0] && last[1] === pair.start[1])
+      );
+    }
+
+    function initFlowGame() {
+      flowPaths = { 0: [], 1: [], 2: [], 3: [] };
+      activeFlowPair = null;
+      flowWon = false;
+
+      const board = document.getElementById('flow-board');
+      board.onpointermove = handleFlowPointerMove;
+
+      window.removeEventListener('pointerup', handleFlowPointerUp);
+      window.removeEventListener('pointercancel', handleFlowPointerUp);
+      window.addEventListener('pointerup', handleFlowPointerUp);
+      window.addEventListener('pointercancel', handleFlowPointerUp);
+
+      renderFlowBoard();
+    }
+
+    function renderFlowBoard() {
+      const board = document.getElementById('flow-board');
+      const svg = document.getElementById('flow-svg');
+      board.innerHTML = '';
+      svg.innerHTML = '';
+
+      const connectedCount = FLOW_PAIRS.filter(isFlowPairConnected).length;
+      document.getElementById('flow-status-text').textContent = `Conectadas: ${connectedCount} / ${FLOW_PAIRS.length}`;
+
+      FLOW_PAIRS.forEach(pair => {
+        const path = flowPaths[pair.id];
+        if (path.length > 1) {
+          const points = path.map(([r, c]) => `${c * 100 + 50},${r * 100 + 50}`).join(' ');
+          const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+          polyline.setAttribute('points', points);
+          polyline.setAttribute('fill', 'none');
+          polyline.setAttribute('stroke', pair.color);
+          polyline.setAttribute('stroke-width', '26');
+          polyline.setAttribute('stroke-linecap', 'round');
+          polyline.setAttribute('stroke-linejoin', 'round');
+          polyline.setAttribute('opacity', '0.78');
+          svg.appendChild(polyline);
+        }
+      });
+
+      for (let r = 0; r < FLOW_SIZE; r++) {
+        for (let c = 0; c < FLOW_SIZE; c++) {
+          const cell = document.createElement('div');
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          cell.className = 'rounded-xl bg-white/85 border border-white flex items-center justify-center shadow-xs transition-transform duration-150 cursor-pointer';
+
+          const endpoint = getFlowEndpoint(r, c);
+          if (endpoint) {
+            cell.style.backgroundColor = endpoint.bg;
+            cell.style.borderColor = endpoint.color;
+            cell.style.borderWidth = '2px';
+            if (isFlowPairConnected(endpoint)) cell.classList.add('scale-105');
+
+            const badge = document.createElement('span');
+            badge.className = 'text-2xl pointer-events-none';
+            badge.textContent = endpoint.emoji;
+            cell.appendChild(badge);
+          }
+
+          cell.onpointerdown = (e) => {
+            e.preventDefault();
+            startFlowDrag(r, c);
+          };
+          board.appendChild(cell);
+        }
+      }
+    }
+
+    function startFlowDrag(r, c) {
+      if (flowWon) return;
+      const endpoint = getFlowEndpoint(r, c);
+      if (endpoint) {
+        activeFlowPair = endpoint.id;
+        flowPaths[endpoint.id] = [[r, c]];
+        renderFlowBoard();
+        return;
+      }
+      const ownerId = getFlowCellOwner(r, c);
+      if (ownerId !== null) {
+        activeFlowPair = ownerId;
+        const idx = flowPaths[ownerId].findIndex(([pr, pc]) => pr === r && pc === c);
+        flowPaths[ownerId] = flowPaths[ownerId].slice(0, idx + 1);
+        renderFlowBoard();
+      }
+    }
+
+    function handleFlowPointerMove(e) {
+      if (activeFlowPair === null || flowWon) return;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      if (!el || !el.dataset || el.dataset.row === undefined) return;
+
+      const r = parseInt(el.dataset.row, 10);
+      const c = parseInt(el.dataset.col, 10);
+      const path = flowPaths[activeFlowPair];
+      if (!path || path.length === 0) return;
+
+      const [lastR, lastC] = path[path.length - 1];
+      if (r === lastR && c === lastC) return;
+      if (Math.abs(r - lastR) + Math.abs(c - lastC) !== 1) return;
+
+      const existingIdx = path.findIndex(([pr, pc]) => pr === r && pc === c);
+      if (existingIdx !== -1) {
+        flowPaths[activeFlowPair] = path.slice(0, existingIdx + 1);
+        renderFlowBoard();
+        return;
+      }
+
+      const currentPair = FLOW_PAIRS[activeFlowPair];
+      if (isFlowPairConnected(currentPair)) return;
+
+      const endpointAtTarget = getFlowEndpoint(r, c);
+      if (endpointAtTarget && endpointAtTarget.id !== activeFlowPair) return;
+
+      const ownerAtTarget = getFlowCellOwner(r, c);
+      if (ownerAtTarget !== null && ownerAtTarget !== activeFlowPair) return;
+
+      path.push([r, c]);
+      if (isFlowPairConnected(currentPair)) {
+        if (navigator.vibrate) navigator.vibrate(25);
+        activeFlowPair = null;
+      }
+
+      renderFlowBoard();
+      checkFlowWin();
+    }
+
+    function handleFlowPointerUp() {
+      activeFlowPair = null;
+    }
+
+    function checkFlowWin() {
+      if (flowWon) return;
+      if (FLOW_PAIRS.every(isFlowPairConnected)) {
+        flowWon = true;
+        fireElegantConfetti(false);
+        addDanyCoins(10, 3);
+
+        setTimeout(() => {
+          document.getElementById('game-3-view').classList.add('hidden');
+          const reward = document.getElementById('reward-3-view');
+          reward.classList.remove('hidden');
+          reward.classList.add('flex');
+          mount3DGiftViewer('canvas-3d-flowers', 'flowers');
+        }, 650);
+      }
+    }
+
+    // =========================================================================
+    // NIVEL 4: TIENDA VIP DANYCOINS, CONTRATO Y MYSTERY BOX
+    // =========================================================================
+    const VIP_CATALOG = {
+      mystery: {
+        label: '🎁 Mystery Box VIP (Sorpresa Especial)',
+        title: 'Mystery Box VIP',
+        desc: 'Caja sorpresa desbloqueada'
+      },
+      feet: {
+        label: '🦶 Masaje de Pies Relajante',
+        title: 'Masaje de Pies',
+        desc: 'Válido por una sesión completa relajante y consentida. ¡Te lo mereces!'
+      },
+      hands: {
+        label: '✋ Masaje de Manos Spa',
+        title: 'Masaje de Manos',
+        desc: 'Válido por una sesión de masaje e hidratación de manos. ¡Disfrútalo!'
+      },
+      gta: {
+        label: '🎮 Un Día Jugando GTA IV',
+        title: 'Día Oficial de GTA IV',
+        desc: 'Válido por un día completo de maratón jugando GTA IV sin interrupciones.'
+      }
+    };
+
+    function initVipShop() {
+      mount3DGiftViewer('canvas-3d-coin', 'coin');
+    }
+
+    function openContractModal(optionKey) {
+      if (contractSigned) return;
+      selectedVipOption = optionKey;
+      const item = VIP_CATALOG[optionKey];
+
+      document.getElementById('contract-selected-box').textContent = item.label;
+      document.getElementById('vip-shop-view').classList.add('hidden');
+      const contractView = document.getElementById('vip-contract-view');
+      contractView.classList.remove('hidden');
+      contractView.classList.add('flex');
+    }
+
+    function cancelContract() {
+      if (contractSigned) return;
+      selectedVipOption = null;
+      document.getElementById('vip-contract-view').classList.add('hidden');
+      document.getElementById('vip-shop-view').classList.remove('hidden');
+    }
+
+    function signAndConfirmContract() {
+      if (contractSigned || !selectedVipOption) return;
+      contractSigned = true;
+
+      // Deshabilitar botones durante la firma
+      const signBtn = document.getElementById('sign-contract-btn');
+      const backBtn = document.getElementById('back-to-shop-btn');
+      signBtn.disabled = true;
+      signBtn.textContent = 'Firmando contrato...';
+      backBtn.classList.add('hidden');
+
+      // Descontar los 30 DanyCoins
+      updateDanyCoinsDisplay(Math.max(0, danyCoins - 30));
+
+      // Ejecutar animación de firma caligráfica
+      const sigPath = document.getElementById('signature-path');
+      sigPath.classList.add('signature-animate');
+
+      if (navigator.vibrate) navigator.vibrate([30, 40, 60]);
+
+      // Mostrar sello de aceptado tras completar trazo de firma
+      setTimeout(() => {
+        const stamp = document.getElementById('contract-stamp');
+        stamp.classList.remove('hidden');
+        stamp.classList.add('stamp-animate');
+        signBtn.textContent = '¡Contrato Firmado! ✓';
+      }, 1450);
+
+      // Pasar a la vista correspondiente según la elección
+      setTimeout(() => {
+        document.getElementById('vip-contract-view').classList.add('hidden');
+
+        if (selectedVipOption === 'mystery') {
+          fireElegantConfetti(true);
+          const mysteryWin = document.getElementById('vip-mystery-win-view');
+          mysteryWin.classList.remove('hidden');
+          mysteryWin.classList.add('flex');
+          mount3DGiftViewer('canvas-3d-mystery', 'mystery');
+        } else {
+          fireElegantConfetti(false);
+          const item = VIP_CATALOG[selectedVipOption];
+          document.getElementById('chosen-alt-title').textContent = item.title;
+          document.getElementById('chosen-alt-desc').textContent = item.desc;
+
+          const otherView = document.getElementById('vip-other-chosen-view');
+          otherView.classList.remove('hidden');
+          otherView.classList.add('flex');
+        }
+      }, 2400);
+    }
+
+    function revealUnclaimedMysteryBox() {
+      const btn = document.getElementById('peek-mystery-btn');
+      btn.disabled = true;
+      btn.classList.add('opacity-60');
+
+      const revealCard = document.getElementById('unclaimed-mystery-reveal');
+      revealCard.classList.remove('hidden');
+      revealCard.classList.add('flex');
+
+      // Animar apertura de la caja
+      setTimeout(() => {
+        document.getElementById('unclaimed-box-emoji').textContent = '✨🧖‍♀️✨';
+      }, 750);
+    }
+  </script>
+</body>
+</html>
